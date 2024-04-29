@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './cart.css';
 
 function CartItem({ item, handleMinus }) {
@@ -20,6 +21,11 @@ function CartItem({ item, handleMinus }) {
 
 function Cart({ cartItems, handleMinus }) {
   const totalAmount = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const navigate = useNavigate();
+
+  const handlePlaceOrder = () => {
+    navigate('/place-order', { state: { cartItems } });
+  };
 
   return (
     <div className="cart">
@@ -32,6 +38,7 @@ function Cart({ cartItems, handleMinus }) {
         ))}
       </div>
       <div className="cart-total">Total: ${totalAmount}</div>
+      <button onClick={handlePlaceOrder}>Place Order</button>
     </div>
   );
 }
