@@ -9,19 +9,11 @@ function Home() {
   const [cartItems, setCartItems] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [notification, setNotification] = useState(null);
-
   const navigate = useNavigate();
-
 
   useEffect(() => {
     fetchProducts();
   }, []);
-
-  useEffect(() => {
-    // Calculate total amount
-    const total = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    console.log('Total amount:', total);
-  }, [cartItems]);
 
   const fetchProducts = async () => {
     try {
@@ -40,11 +32,18 @@ function Home() {
         item.id === product.product_id ? { ...item, quantity: item.quantity + 1 } : item
       );
       setCartItems(updatedItems);
+      setNotification(`${product.product_name} added to cart (${existingItem.quantity + 1} times) 🎉`);
     } else {
-      const newItem = { id: product.product_id, name: product.product_name, price: product.price, quantity: 1 };
+      const newItem = {
+        id: product.product_id,
+        name: product.product_name,
+        price: product.price,
+        quantity: 1
+      };
       setCartItems([...cartItems, newItem]);
+      setNotification(`${product.product_name} added to cart (1 time) 🎉`);
     }
-    setNotification(`${product.product_name} added to cart 🎉`);
+
     setTimeout(() => {
       setNotification(null);
     }, 3000);
@@ -57,15 +56,16 @@ function Home() {
     setCartItems(updatedItems);
   };
 
-  const handleClick=()=>{
+  const handleLogout = () => {
+    // Perform logout action here
     navigate('/login');
-  }
+  };
 
   return (
     <div>
       <h2>Products</h2>
       <div className={`notification ${notification && 'show'}`}>{notification}</div>
-      <button className='logOut' onClick={handleClick}>Log out</button>
+      <button className='logOut' onClick={handleLogout}>Log out</button>
       <div className="product-list">
         {products.map((product) => (
           <div key={product.product_id} className="product-item">
